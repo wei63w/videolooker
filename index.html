@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			body{
+				margin: 0;
+				padding: 0;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/hls.js/latest/hls.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.js"></script>
+		<!-- <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script> -->
+	</head>
+	<body>
+		<div class="container">
+				<video style="height: 100%;width: 100%;" controls="controls" height="100%" width="100%"  id="video"></video>
+		</div>
+		
+		
+		<script>
+			
+			  var config = {
+			      autoStartLoad: true,
+			      startPosition: -1,
+			      debug: false,
+			      capLevelOnFPSDrop: false,
+			      capLevelToPlayerSize: false,
+			      defaultAudioCodec: undefined,
+			      initialLiveManifestSize: 1,
+			      maxBufferLength: 30,
+			      maxMaxBufferLength: 600,
+			      maxBufferSize: 60*1000*1000,
+			      maxBufferHole: 0.5,
+			      lowBufferWatchdogPeriod: 0.5,
+			      highBufferWatchdogPeriod: 3,
+			      nudgeOffset: 0.1,
+			      nudgeMaxRetry: 3,
+			      maxFragLookUpTolerance: 0.25,
+			      liveSyncDurationCount: 2,
+				  // liveSyncDuration:5,
+			      liveMaxLatencyDurationCount: Infinity,
+			      enableWorker: true,
+			      enableSoftwareAES: true,
+			      manifestLoadingTimeOut: 10000,
+			      manifestLoadingMaxRetry: 1,
+			      manifestLoadingRetryDelay: 1000,
+			      manifestLoadingMaxRetryTimeout: 64000,
+			      startLevel: undefined,
+			      levelLoadingTimeOut: 10000,
+			      levelLoadingMaxRetry: 4,
+			      levelLoadingRetryDelay: 1000,
+			      levelLoadingMaxRetryTimeout: 64000,
+			      fragLoadingTimeOut: 20000,
+			      fragLoadingMaxRetry: 6,
+			      fragLoadingRetryDelay: 1000,
+			      fragLoadingMaxRetryTimeout: 64000,
+			      startFragPrefetch: false,
+			      testBandwidth: true,
+			      fpsDroppedMonitoringPeriod: 5000,
+			      fpsDroppedMonitoringThreshold: 0.2,
+			      appendErrorMaxRetry: 3,
+			      // loader: customLoader,
+			      // fLoader: customFragmentLoader,
+			      // pLoader: customPlaylistLoader,
+			      // xhrSetup: XMLHttpRequestSetupCallback,
+			      // fetchSetup: FetchSetupCallback,
+			      // abrController: AbrController,
+			      // bufferController: BufferController,
+			      // capLevelController: CapLevelController,
+			      // fpsController: FPSController,
+			      // timelineController: TimelineController,
+			      enableWebVTT: false,//字幕
+			      enableCEA708Captions: false,//是否启用CEA-708字幕
+			      stretchShortVideoTrack: false,
+			      maxAudioFramesDrift: 1,
+			      forceKeyFrameOnDiscontinuity: true,//连续关键帧
+			      abrEwmaFastLive: 3.0,
+			      abrEwmaSlowLive: 9.0,
+			      abrEwmaFastVoD: 3.0,
+			      abrEwmaSlowVoD: 9.0,
+			      abrEwmaDefaultEstimate: 500000,//收集片段带宽样本之前的默认带宽估计（以位/秒为单位）
+			      abrBandWidthFactor: 0.95,
+			      abrBandWidthUpFactor: 0.7,
+			      abrMaxWithRealBitrate: false,
+			      maxStarvationDelay: 4,//缓冲级别 4s
+			      maxLoadingDelay: 4,//最大加载延迟 4s
+			      minAutoBitrate: 0,
+			      emeEnabled: false,
+			      widevineLicenseUrl: undefined,
+			      // requestMediaKeySystemAccessFunc: requestMediaKeySystemAccess
+			  };
+			var video = document.getElementById('video');
+			video.addEventListener('click',function(){
+					console.log('click');
+			});
+			video.addEventListener('focus',function(){
+					console.log('focus');
+					$(this).blur();
+			});
+			video.addEventListener('blur',function(){
+					console.log('blur');
+			});
+			
+			function onLevelLoaded (event, data) {
+			  // var level_duration = data.details.totalduration;
+			}
+			var hls = new Hls(config);
+		  // if(Hls.isSupported()) {
+		    
+		    hls.loadSource('https://tehlsvodhls02.vhallyun.com/vhallyun/vhallrecord/6b313ba2/20200502215301_6b313ba2/record.m3u8?token=11C04634_NTI3MTIzOTkwXzVFQkZBMzMzX05tSXpNVE5pWVRJX01UVmtaalJrTTJaZk5ETXlOVGN6TVRBX3ZvZA');
+		    hls.attachMedia(video);
+		    hls.on(Hls.Events.MANIFEST_PARSED,function() {
+		      video.play();
+			});
+			// video.playbackRate = speed;
+			// hls.off(Hls.Events.LEVEL_LOADED, onLevelLoaded);//取消
+			hls.attachMedia(video);//绑定videoElement和hls实例
+		 // }
+		 
+		 
+		 
+		     var vol = 0.1;  //1代表100%音量，每次增减0.1
+		     var time = 10; //单位秒，每次增减10秒
+		     var videoElement = hls.media;//从hls实例返回绑定的videoElement
+		     console.log(videoElement.paused);
+		 
+		     document.onkeyup = function (event) {//键盘事件
+		 
+		         console.log("keyCode:" + event.keyCode);
+		         var e = event || window.event || arguments.callee.caller.arguments[0];
+		 
+		         //鼠标上下键控制视频音量
+		         if (e && e.keyCode === 38) {
+		 
+		             // 按 向上键
+		             videoElement.volume !== 1 ? videoElement.volume += vol : 1;
+		             return false;
+		 
+		         } else if (e && e.keyCode === 40) {
+		 
+		             // 按 向下键
+		             videoElement.volume !== 0 ? videoElement.volume -= vol : 1;
+		             return false;
+		 
+		         } else if (e && e.keyCode === 37) {
+		 
+		             // 按 向左键
+		             videoElement.currentTime !== 0 ? videoElement.currentTime -= time : 1;
+		             return false;
+		 
+		         } else if (e && e.keyCode === 39) {
+		 
+		             // 按 向右键
+		             videoElement.volume !== videoElement.duration ? videoElement.currentTime += time : 1;
+		             return false;
+		 
+		         } else if (e && e.keyCode === 32) {
+			
+		             // 按空格键 判断当前是否暂停
+		             videoElement.paused === true ? videoElement.play() : videoElement.pause();
+		             return false;
+		         }
+		 
+		     };
+		</script>
+	</body>
+</html>
