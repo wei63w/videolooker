@@ -18,12 +18,49 @@
 	</head>
 	<body>
 		<div class="container">
-				<video style="height: 100%;width: 100%;" controls="controls" height="100%" width="100%"  id="video"></video>
+			<form id="mform">
+				<div class="form-group">
+				   <label for="exampleInputEmail1">Video address</label>
+				   <input type="text" class="form-control" id="address" placeholder="Please input Video address">
+				 </div>
+				  <button onclick="jumpaddress();" type="button" style="border: 1px solid #000000;" class="btn btn-default">Submit</button>
+			</form>
+			 
+			<video style="height: 100%;width: 100%;display:none;" controls="controls" height="100%" width="100%"  id="video"></video>
 		</div>
 		
 		
 		<script>
+			var url = getpar();
+			var video = document.getElementById('video');
 			
+							  
+			function jumpaddress(){
+				setpar(document.getElementById('address').value);
+				window.location.href = location.href +'?loading=yes';
+			}
+			
+			function getpar(){
+				return localStorage.getItem('url');
+			}
+			function setpar(url){
+				localStorage.setItem('url',url);
+			}
+			function getQueryVariable(variable)
+			{
+			       var query = window.location.search.substring(1);
+			       var vars = query.split("&");
+			       for (var i=0;i<vars.length;i++) {
+			               var pair = vars[i].split("=");
+			               if(pair[0] == variable){return pair[1];}
+			       }
+			       return(false);
+			}
+			if(getQueryVariable('loading') && url){
+							 document.getElementById('mform').style.display = 'none';
+							 document.getElementById('video').style.display = 'block';
+							 
+			}
 			  var config = {
 			      autoStartLoad: true,
 			      startPosition: -1,
@@ -94,7 +131,10 @@
 			      widevineLicenseUrl: undefined,
 			      // requestMediaKeySystemAccessFunc: requestMediaKeySystemAccess
 			  };
-			var video = document.getElementById('video');
+			 
+				  
+			  
+			
 			video.addEventListener('click',function(){
 					console.log('click');
 			});
@@ -110,9 +150,11 @@
 			  // var level_duration = data.details.totalduration;
 			}
 			var hls = new Hls(config);
-		  // if(Hls.isSupported()) {
-		    
-		    hls.loadSource('https://tehlsvodhls02.vhallyun.com/vhallyun/vhallrecord/6b313ba2/20200502215301_6b313ba2/record.m3u8?token=11C04634_NTI3MTIzOTkwXzVFQkZBMzMzX05tSXpNVE5pWVRJX01UVmtaalJrTTJaZk5ETXlOVGN6TVRBX3ZvZA');
+		  if(getQueryVariable('loading') && url){
+		    var math2 = 'https://tehlsvodhls02.vhallyun.com/vhallyun/vhallrecord/lss_a05177c8/20200503120644_fa85d3fb/record.m3u8?token=555594C1_NzIxMzA1Mzk4XzVFQzFGNUQxX1ptRTROV1F6Wm1JX01UVmtaalJrTTJaZmRtbHphWFJmTmpJM056UXdOek13X3ZvZA';
+			var english2 = 'https://tehlsvodhls02.vhallyun.com/vhallyun/vhallrecord/6b313ba2/20200502215301_6b313ba2/record.m3u8?token=11C04634_NTI3MTIzOTkwXzVFQkZBMzMzX05tSXpNVE5pWVRJX01UVmtaalJrTTJaZk5ETXlOVGN6TVRBX3ZvZA';
+			var english34 = 'https://tehlsvodhls02.vhallyun.com/vhallyun/vhallrecord/133e0e6b/20200511110252_133e0e6b/record.m3u8?token=245E2F11_NTkxNDAzMTQzXzVFQzQ5ODMwX01UTXpaVEJsTm1JX01UVmtaalJrTTJaZmRtbHphWFJmTmpJM056UXdOek13X3ZvZA';
+		    hls.loadSource(url);
 		    hls.attachMedia(video);
 		    hls.on(Hls.Events.MANIFEST_PARSED,function() {
 		      video.play();
@@ -120,7 +162,7 @@
 			// video.playbackRate = speed;
 			// hls.off(Hls.Events.LEVEL_LOADED, onLevelLoaded);//取消
 			hls.attachMedia(video);//绑定videoElement和hls实例
-		 // }
+		 
 		 
 		 
 		 
@@ -167,6 +209,8 @@
 		         }
 		 
 		     };
+			 
+			 }
 		</script>
 	</body>
 </html>
